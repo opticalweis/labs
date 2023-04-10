@@ -1,0 +1,103 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+typedef float * Arr4Ptr[4];
+Arr4Ptr* Arr3Ptr[3];
+
+float Val; 
+int Row, Col;
+void OutArr(); 
+
+int main() {
+    setlocale(0,"");
+    cout << "Содержимое структуры по умолчанию\n" << endl;
+    OutArr();
+	
+	cout << "\nСоздание структуры и ввод данных\n";
+ 	cout << "Ввести вещественные значения: \n";
+    for (Row = 0; Row < 3; Row = Row + 1) {
+    	cout << setw(3) << "Ряд " << Row << ": ";
+        Arr3Ptr[Row] = new Arr4Ptr[1];
+        for (Col = 1; Col < 4; Col = Col + 1) {
+                (*Arr3Ptr[Row])[Col] = new float; 
+                cin >> Val; 
+                *(*Arr3Ptr[Row])[Col] = Val;
+            }
+    }
+	cout << "\nСодержимое памяти после создания"
+ 		<< " структуры и ввода данных\n";
+    OutArr();
+
+	cout << "\nВведите компонент [0][0]: ";
+    Arr3Ptr[3] = new Arr4Ptr[0];
+    for (Row = 0; Row < 3; Row = Row + 1)
+        if (Row == 0) {
+            (*Arr3Ptr[Row])[0] = new float; 
+            cin >> Val;
+            *(*Arr3Ptr[Row])[0] = Val;
+        }
+        else {
+        	(*Arr3Ptr[Row])[0] = NULL;
+        }
+
+	cout << "Содержимое памяти после добавления"
+ 		<< " компонента\n"; 
+    OutArr();
+	
+	cout << "\nУдаляем компонент [1][1]\n";
+    delete (*Arr3Ptr[1])[1];
+
+    (*Arr3Ptr[1])[1] = NULL;
+	
+	cout << "Содержимое памяти после удаления "
+ 		<< "компонента\n"; 
+    OutArr();
+	
+	cout << "\nМеняем компонет [2][1] \n";
+	cout << "Введите новое значение: ";
+    cin >> Val;
+    *(*Arr3Ptr[2])[1] = Val;
+	
+	cout << "\nСодержимое памяти после изменения"
+ 		<< " компонента\n"; 
+    OutArr();
+
+    for (Row = 0; Row < 3; Row++)
+        if (Arr3Ptr[Row] != NULL) {
+            for (Col = 0; Col < 4; Col++)
+                if ((*Arr3Ptr[Row])[Col] != NULL) {
+                    delete (*Arr3Ptr[Row])[Col];
+                    (*Arr3Ptr[Row])[Col] = NULL;
+                }
+            delete [] Arr3Ptr[Row];
+            Arr3Ptr[Row] = NULL; 
+        }
+	
+	cout << "\nВывод для проверки - всё ли освободили?\n";
+    OutArr();
+
+    cin.get();
+    return 0;
+}
+
+void OutArr() {
+    char Row, Col;
+    for (Col = 0; Col < 4; Col++)
+        cout << setw(12) << int(Col);
+    cout << endl;
+
+    for (Row = 0; Row < 3; Row++) {
+        cout << setw(3) << int(Row); 
+        if (Arr3Ptr[Row] == NULL)
+            cout << setw(15) << "empty" << setw(20) << "line";
+        else
+            for (Col = 0; Col < 4; Col += 1)
+                if ((*Arr3Ptr[Row])[Col] == NULL)
+                    cout << setw(12) << "null"; 
+ 				else
+ 					cout << setw(12) << fixed << setprecision(2) << *(*Arr3Ptr[Row])[Col];
+ 		cout << endl;
+ 	};
+ 	return;
+}
